@@ -149,6 +149,43 @@ class HomePage extends StatelessWidget {
 }
 ```
 
+## VS Code launch.json
+When you are use VS Code, you can use launch.json to enable or disable ad in your app.
+
+It will using production ad by default.
+
+launch.json example
+```json
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "getx_admob [disable ad]",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--dart-define",
+                "ENABLE_AD=false"
+            ]
+        },
+        {
+            "name": "getx_admob [use debug ad]",
+            "request": "launch",
+            "type": "dart",
+            "args": [
+                "--dart-define",
+                "DEBUG_AD=true"
+            ]
+        },
+        {
+            "name": "getx_admob [use production ad]",
+            "request": "launch",
+            "type": "dart"
+        }
+    ]
+}
+```
+
 ## Additional information
 
 TODO: Tell users more about the package: where to find more information, how to
