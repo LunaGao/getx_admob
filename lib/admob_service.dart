@@ -6,10 +6,7 @@ import 'admob_unit_id.dart';
 import 'ad_build_config.dart';
 
 class AdmobService extends GetxService {
-  AdmobService({AdBuildConfig? buildConfig})
-    : _buildConfig = buildConfig ?? const AdBuildConfig.fromEnvironment();
-
-  final AdBuildConfig _buildConfig;
+  final AdBuildConfig _buildConfig = const AdBuildConfig.fromEnvironment();
   bool get enableAd => _buildConfig.enableAd;
   bool get debugAd => _buildConfig.debugAd;
   var loadedAds = <AdmobUnitId, bool>{}.obs;
@@ -21,6 +18,7 @@ class AdmobService extends GetxService {
   // ===== 开屏广告 start =====
   /// Maximum duration allowed between loading and showing the ad.
   final Duration maxCacheDuration = const Duration(hours: 4);
+  late AdmobUnitId appOpenAdUnitId;
   AppOpenAd? _appOpenAd;
   bool _isShowingAppOpenAd = false;
 
@@ -33,7 +31,11 @@ class AdmobService extends GetxService {
   }
   // ===== 开屏广告 end =====
 
-  Future<AdmobService> init(List<AdmobUnitId> adUnitIds) async {
+  Future<AdmobService> init({
+    required List<AdmobUnitId> adUnitIds,
+    required AdmobUnitId appOpenAdUnitId,
+  }) async {
+    this.appOpenAdUnitId = appOpenAdUnitId;
     loadedAds.value = {for (final banner in adUnitIds) banner: false};
     if (!enableAd) {
       return this;
@@ -45,31 +47,29 @@ class AdmobService extends GetxService {
 
   String getAppOpenAdUnitId() {
     if (debugAd) {
+      // https://developers.google.com/admob/flutter/app-open
+      // values for debug
       if (GetPlatform.isAndroid) {
-        return 'ANDROID_DEBUG_AD_UNIT_ID';
+        // debug value
+        return 'ca-app-pub-3940256099942544/9257395921';
       } else {
-        return 'IOS_DEBUG_AD_UNIT_ID';
+        // debug value
+        return 'ca-app-pub-3940256099942544/5575463023';
       }
     }
-    // 如果是正式环境
-    if (GetPlatform.isAndroid) {
-      // Android 正式环境
-      return 'Android的开屏广告ID';
-    }
-    if (GetPlatform.isIOS) {
-      // iOS 正式环境
-      return 'iOS的开屏广告ID';
-    }
-
-    return '';
+    return appOpenAdUnitId.productionUnitId;
   }
 
   String getAdUnitId(AdmobUnitId adValue) {
     if (debugAd) {
+      // https://developers.google.com/admob/flutter/banner
+      // values for debug
       if (GetPlatform.isAndroid) {
-        return 'ANDROID_DEBUG_AD_UNIT_ID';
+        // debug value
+        return 'ca-app-pub-3940256099942544/9214589741';
       } else {
-        return 'IOS_DEBUG_AD_UNIT_ID';
+        // debug value
+        return 'ca-app-pub-3940256099942544/2435281174';
       }
     }
     return adValue.productionUnitId;

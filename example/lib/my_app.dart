@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       title: 'Admob Example',
       theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: const HomePage(),
+      home: HomePage(),
       builder: (context, child) {
         return AdaptiveAdLoader(child: child);
       },

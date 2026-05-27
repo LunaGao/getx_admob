@@ -13,7 +13,6 @@ class HomePage extends StatelessWidget {
         title: Text("Admob Example"),
       ),
       body: Column(
-        mainAxisAlignment: .center,
         children: [
           AppBannerAd(AppAdUnits.homeBanner),
           const Text('this is show ad'),

@@ -87,11 +87,21 @@ main.dart
 // ...
 import 'package:example/app_ad_units.dart'; // <-- import getx admob ad units
 import 'package:getx_admob/getx_admob.dart'; // <-- import getx admob
-void main() {
+void main() async {
   // ensure initialized
   WidgetsFlutterBinding.ensureInitialized(); // <-- ensure initialized, MUST ADD THIS
   // ...
-  Get.putAsync(() => AdmobService().init(AppAdUnits.adUnits)); // <-- init getx admob
+  // init admob service
+  await Get.putAsync(
+    () => AdmobService().init(
+      adUnitIds: AppAdUnits.adUnits,
+      // using for production
+      appOpenAdUnitId: AdmobUnitId(
+        androidUnitId: 'OPEN_APP_AD_UNIT_ID_ANDROID',
+        iosUnitId: 'OPEN_APP_AD_UNIT_ID_IOS',
+      ),
+    ),
+  );
   // ...
   runApp(const MyApp());
 }
