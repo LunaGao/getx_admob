@@ -3,12 +3,12 @@ import 'package:get/get.dart';
 import 'package:getx_admob/admob_service.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import 'ad_banner_value.dart';
+import 'admob_unit_id.dart';
 
 class AppBannerAd extends StatelessWidget {
   const AppBannerAd(this.adBannerValue, {super.key});
 
-  final AdBannerValue adBannerValue;
+  final AdmobUnitId adBannerValue;
 
   @override
   Widget build(BuildContext context) {

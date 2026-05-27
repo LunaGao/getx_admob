@@ -57,15 +57,85 @@ Configure your AdMob application ID.
 
 ## Code example
 
+Add app_ad_units.dart file
+```dart
+import 'package:getx_admob/getx_admob.dart';
+
+class AppAdUnits {
+  static List<AdmobUnitId> adUnits = [
+    AppAdUnits.homeBanner,
+    AppAdUnits.detailBanner,
+    /// ... add more AdmobUnitId
+  ];
+
+  static AdmobUnitId homeBanner = AdmobUnitId(
+    androidUnitId: 'ca-app-pub-3940256099942544/9214589741',
+    iosUnitId: 'ca-app-pub-3940256099942544/2435281174',
+  );
+
+  static AdmobUnitId detailBanner = AdmobUnitId(
+    androidUnitId: 'ca-app-pub-3940256099942544/9214589741',
+    iosUnitId: 'ca-app-pub-3940256099942544/2435281174',
+  );
+
+  /// ... add more AdmobUnitId
+}
+```
+
 main.dart
 ```dart
 // ...
+import 'package:example/app_ad_units.dart'; // <-- import getx admob ad units
 import 'package:getx_admob/getx_admob.dart'; // <-- import getx admob
 void main() {
+  // ensure initialized
+  WidgetsFlutterBinding.ensureInitialized(); // <-- ensure initialized, MUST ADD THIS
   // ...
-  Get.put(() => AdmobService().init()); // <-- init getx admob
+  Get.putAsync(() => AdmobService().init(AppAdUnits.adUnits)); // <-- init getx admob
   // ...
   runApp(const MyApp());
+}
+```
+
+my_app.dart
+```dart
+import 'package:getx_admob/getx_admob.dart'; // <-- import getx admob
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GetMaterialApp(
+      // ...
+      builder: (context, child) {
+        return AdaptiveAdLoader(child: child); // <-- use adaptive ad loader
+      },
+    );
+  }
+}
+```
+
+home_page.dart
+```dart
+// ...
+import 'package:example/app_ad_units.dart'; // <-- import getx admob ad units
+import 'package:getx_admob/getx_admob.dart'; // <-- import getx admob
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: .center,
+        children: [
+          // ...
+          AppBannerAd(AppAdUnits.homeBanner), // <-- add getx admob banner ad
+          // ...
+        ],
+      ),
+    );
+  }
 }
 ```
 

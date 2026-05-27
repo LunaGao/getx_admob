@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
-import 'ad_banner_value.dart';
+import 'admob_unit_id.dart';
 import 'ad_build_config.dart';
 
 class AdmobService extends GetxService {
@@ -12,8 +12,8 @@ class AdmobService extends GetxService {
   final AdBuildConfig _buildConfig;
   bool get enableAd => _buildConfig.enableAd;
   bool get debugAd => _buildConfig.debugAd;
-  var loadedAds = <AdBannerValue, bool>{}.obs;
-  var bannerAds = <AdBannerValue, BannerAd>{}.obs;
+  var loadedAds = <AdmobUnitId, bool>{}.obs;
+  var bannerAds = <AdmobUnitId, BannerAd>{}.obs;
   bool _hasLoadedBannerAds = false;
   bool _isLoadingAppOpenAd = false;
   int? _bannerWidth;
@@ -33,10 +33,8 @@ class AdmobService extends GetxService {
   }
   // ===== 开屏广告 end =====
 
-  Future<AdmobService> init() async {
-    loadedAds.value = {
-      for (final banner in AdBannerValue.values) banner: false,
-    };
+  Future<AdmobService> init(List<AdmobUnitId> adUnitIds) async {
+    loadedAds.value = {for (final banner in adUnitIds) banner: false};
     if (!enableAd) {
       return this;
     }
@@ -66,7 +64,7 @@ class AdmobService extends GetxService {
     return '';
   }
 
-  String getAdUnitId(AdBannerValue adValue) {
+  String getAdUnitId(AdmobUnitId adValue) {
     if (debugAd) {
       if (GetPlatform.isAndroid) {
         return 'ANDROID_DEBUG_AD_UNIT_ID';
@@ -95,7 +93,7 @@ class AdmobService extends GetxService {
       _bannerWidth = width;
       _hasLoadedBannerAds = true;
       // 循环载入所有Banner广告
-      for (AdBannerValue adBanner in loadedAds.keys) {
+      for (AdmobUnitId adBanner in loadedAds.keys) {
         _loadAd(adBanner, size);
       }
     }
@@ -125,10 +123,7 @@ class AdmobService extends GetxService {
     );
   }
 
-  void _loadAd(
-    AdBannerValue adUnitId,
-    AnchoredAdaptiveBannerAdSize size,
-  ) async {
+  void _loadAd(AdmobUnitId adUnitId, AnchoredAdaptiveBannerAdSize size) async {
     bannerAds.remove(adUnitId)?.dispose();
     loadedAds[adUnitId] = false;
     bannerAds[adUnitId] = BannerAd(

@@ -5,7 +5,7 @@ import 'admob_service.dart';
 class AdaptiveAdLoader extends StatefulWidget {
   const AdaptiveAdLoader({required this.child, super.key});
 
-  final Widget child;
+  final Widget? child;
 
   @override
   State<AdaptiveAdLoader> createState() => _AdaptiveAdLoaderState();
@@ -27,6 +27,6 @@ class _AdaptiveAdLoaderState extends State<AdaptiveAdLoader> {
         Get.find<AdmobService>().loadAllAds(width);
       });
     }
-    return widget.child;
+    return widget.child ?? const SizedBox.shrink();
   }
 }
