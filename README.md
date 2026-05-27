@@ -1,27 +1,28 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+![getx_admob](https://socialify.git.ci/LunaGao/getx_admob/image?custom_language=Flutter&description=1&font=Raleway&forks=1&issues=1&language=1&name=1&owner=1&pattern=Signal&pulls=1&stargazers=1&theme=Auto)
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
+[![Bless](https://img.shields.io/badge/bless-God-brightgreen)](https://lunagao.github.io/BlessYourCodeTag/)
+![Pub Version](https://img.shields.io/pub/v/getx_admob)
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Easy to implement AdMob using GetX in Flutter. Only support __Android__ and __iOS__.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+* banner ad.
+* open app ad.
 
 ## Getting started
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Steps: 
+* Import this package.
+* Add admob application ID
+  * iOS Info.plist
+  * Android AndroidManifest.xml
+* Add app_ad_units.dart file.
+* Modify main.dart file.
+* Modify my_app.dart file.
+* Modify page, add banner ad.
+
 
 ## Usage
 
@@ -188,6 +189,6 @@ launch.json example
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+Welcome to contribute to this package.
+
+https://github.com/LunaGao/getx_admob
