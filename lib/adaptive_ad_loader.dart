@@ -11,8 +11,28 @@ class AdaptiveAdLoader extends StatefulWidget {
   State<AdaptiveAdLoader> createState() => _AdaptiveAdLoaderState();
 }
 
-class _AdaptiveAdLoaderState extends State<AdaptiveAdLoader> {
+class _AdaptiveAdLoaderState extends State<AdaptiveAdLoader>
+    with WidgetsBindingObserver {
   int? _lastRequestedWidth;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this); // Start observing
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this); // Clean up
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      Get.find<AdmobService>().showAppOpenAdIfAvailable();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

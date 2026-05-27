@@ -1,10 +1,9 @@
 import 'package:example/app_ad_units.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:getx_admob/getx_admob.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class DetailPage extends StatelessWidget {
+  const DetailPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,14 +14,8 @@ class HomePage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          AppBannerAd(AppAdUnits.homeBanner),
-          const Text('this is show ad'),
-          FilledButton(
-            onPressed: () {
-              Get.toNamed('/detail');
-            },
-            child: const Text('go to detail'),
-          ),
+          AppBannerAd(AppAdUnits.detailBanner),
+          const Text('this is detail show ad'),
         ],
       ),
     );
