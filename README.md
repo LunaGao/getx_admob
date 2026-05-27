@@ -25,11 +25,48 @@ start using the package.
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+According to the [official documentation](https://developers.google.com/admob/flutter/quick-start),
 
+Configure your AdMob application ID.
+* Add iOS Info.plist.
+* Add AndroidManifest.xml.
+
+#### ios/Runner/Info.plist
+```xml
+<plist version="1.0">
+<dict>
+	<!-- ... -->
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-3940256099942544~1458002511</string>
+</dict>
+</plist>
+```
+
+#### android/app/src/main/AndroidManifest.xml
+```xml
+<manifest>
+    <application>
+        <!-- ... -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
+    </application>
+</manifest>
+```
+
+
+## Code example
+
+main.dart
 ```dart
-const like = 'sample';
+// ...
+import 'package:getx_admob/getx_admob.dart'; // <-- import getx admob
+void main() {
+  // ...
+  Get.put(() => AdmobService().init()); // <-- init getx admob
+  // ...
+  runApp(const MyApp());
+}
 ```
 
 ## Additional information
