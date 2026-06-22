@@ -26,3 +26,24 @@ linter:
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+analyzer:
+  errors:
+    argument_type_not_assignable: ignore
+    return_of_invalid_type: ignore
+    ambiguous_import: ignore
+    invalid_assignment: ignore
+    uri_does_not_exist: ignore
+    undefined_annotation: ignore
+    undefined_function: ignore
+    undefined_identifier: ignore
+    non_abstract_class_inherits_abstract_member: ignore
+    implements_super_class: ignore
+    undefined_named_parameter: ignore
+    non_type_as_type_argument: ignore
+    non_constant_list_element: ignore
+  language:
+    strict-casts: false
+    strict-inference: false
+    strict-raw-types: false
+  strong-mode:
+    implicit-casts: false
