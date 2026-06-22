@@ -6,6 +6,8 @@
 
 Easy to implement AdMob using GetX in Flutter. Only support __Android__ and __iOS__.
 
+> __Note__: **0.1.0 version and above** are using for **Flutter 3.44.0 and above** (iOS package is using Swift Package). If you are using Flutter 3.41.9 and below (iOS using Pod), please use 0.0.2 version.
+
 ## Features
 
 * banner ad.

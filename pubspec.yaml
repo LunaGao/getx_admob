@@ -1,6 +1,6 @@
 name: getx_admob
 description: "Implement AdMob using GetX in Flutter. Easy to use Admob in your Flutter when you use GetX. Only for Android and iOS."
-version: 0.0.2
+version: 0.1.0
 homepage: https://github.com/LunaGao/getx_admob
 
 environment:
