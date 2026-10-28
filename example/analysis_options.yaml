@@ -41,6 +41,11 @@ analyzer:
     undefined_named_parameter: ignore
     non_type_as_type_argument: ignore
     non_constant_list_element: ignore
+  exclude:
+    - build/**
+    - android/**
+    - ios/**
+    - macos/**
   language:
     strict-casts: false
     strict-inference: false

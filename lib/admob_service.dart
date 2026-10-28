@@ -35,6 +35,10 @@ class AdmobService extends GetxService {
     required List<AdmobUnitId> adUnitIds,
     required AdmobUnitId appOpenAdUnitId,
   }) async {
+    if (!GetPlatform.isAndroid && !GetPlatform.isIOS) {
+      // 非Android和IOS平台，不初始化广告
+      return this;
+    }
     this.appOpenAdUnitId = appOpenAdUnitId;
     loadedAds.value = {for (final banner in adUnitIds) banner: false};
     if (!enableAd) {
@@ -77,6 +81,10 @@ class AdmobService extends GetxService {
 
   Future<void> loadAllAds(int width) async {
     if (!enableAd) {
+      return;
+    }
+    if (!GetPlatform.isAndroid && !GetPlatform.isIOS) {
+      // 非Android和IOS平台，不初始化广告
       return;
     }
     if (width <= 0) {
@@ -159,6 +167,10 @@ class AdmobService extends GetxService {
   /// new ad.
   void showAppOpenAdIfAvailable() {
     if (!enableAd) {
+      return;
+    }
+    if (!GetPlatform.isAndroid && !GetPlatform.isIOS) {
+      // 非Android和IOS平台，不初始化广告
       return;
     }
     if (!isAppOpenAdAvailable) {
