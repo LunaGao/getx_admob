@@ -1,4 +1,4 @@
-## Unreleased
+## 0.3.0
 
 * add on-demand banner loading with unit-and-width caching.
 * add bounded banner retries with 2, 4 and 8 second delays.

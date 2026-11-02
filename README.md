@@ -21,6 +21,17 @@ Easy to implement AdMob using GetX in Flutter. Only support __Android__ and __iO
 | --- | --- | --- | --- |
 | open app ad | ![open app ad](https://raw.githubusercontent.com/LunaGao/getx_admob/main/img/img1.png) | banner ad | ![banner ad](https://raw.githubusercontent.com/LunaGao/getx_admob/main/img/img2.png) |
 
+## Installation
+
+Add `getx_admob` to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  getx_admob: ^0.3.0
+```
+
+Then run `flutter pub get`.
+
 ## Getting started
 
 Steps: 
