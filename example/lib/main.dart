@@ -18,6 +18,8 @@ void main() async {
         androidUnitId: 'ca-app-pub-3940256099942544/9257395921',
         iosUnitId: 'ca-app-pub-3940256099942544/5575463023',
       ),
+      bannerSizePolicy: AdmobBannerSizePolicy.standardAdaptive,
+      onDiagnostic: (event) => debugPrint('Example $event'),
     ),
   );
 

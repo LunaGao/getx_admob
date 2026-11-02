@@ -1,3 +1,5 @@
+enum AdmobBannerSizePolicy { standardAdaptive, largeAdaptive }
+
 class AdBuildConfig {
   const AdBuildConfig({required this.enableAd, required bool debugAd})
     : debugAd = enableAd ? debugAd : false;

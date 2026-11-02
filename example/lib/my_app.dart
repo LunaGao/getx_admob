@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       home: HomePage(),
       routes: {'/detail': (context) => const DetailPage()},
       builder: (context, child) {
-        return AdaptiveAdLoader(child: child);
+        return AdaptiveAdLoader(preloadAllBanners: false, child: child);
       },
     );
   }

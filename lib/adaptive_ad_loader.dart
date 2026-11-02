@@ -3,9 +3,14 @@ import 'package:get/get.dart';
 import 'admob_service.dart';
 
 class AdaptiveAdLoader extends StatefulWidget {
-  const AdaptiveAdLoader({required this.child, super.key});
+  const AdaptiveAdLoader({
+    required this.child,
+    this.preloadAllBanners = true,
+    super.key,
+  });
 
   final Widget? child;
+  final bool preloadAllBanners;
 
   @override
   State<AdaptiveAdLoader> createState() => _AdaptiveAdLoaderState();
@@ -19,6 +24,16 @@ class _AdaptiveAdLoaderState extends State<AdaptiveAdLoader>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this); // Start observing
+    _updateBannerLoadingMode();
+  }
+
+  @override
+  void didUpdateWidget(covariant AdaptiveAdLoader oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.preloadAllBanners != widget.preloadAllBanners) {
+      _lastRequestedWidth = null;
+      _updateBannerLoadingMode();
+    }
   }
 
   @override
@@ -37,7 +52,7 @@ class _AdaptiveAdLoaderState extends State<AdaptiveAdLoader>
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width.truncate();
-    if (width > 0 && width != _lastRequestedWidth) {
+    if (widget.preloadAllBanners && width > 0 && width != _lastRequestedWidth) {
       _lastRequestedWidth = width;
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted || !Get.isRegistered<AdmobService>()) {
@@ -48,5 +63,14 @@ class _AdaptiveAdLoaderState extends State<AdaptiveAdLoader>
       });
     }
     return widget.child ?? const SizedBox.shrink();
+  }
+
+  void _updateBannerLoadingMode() {
+    if (!Get.isRegistered<AdmobService>()) {
+      return;
+    }
+    Get.find<AdmobService>().setOnDemandBannerLoading(
+      !widget.preloadAllBanners,
+    );
   }
 }

@@ -10,8 +10,12 @@ Easy to implement AdMob using GetX in Flutter. Only support __Android__ and __iO
 
 ## Features
 
-* banner ad.
-* open app ad.
+* Banner and app open ads for Android and iOS.
+* Startup preloading or on-demand banner loading.
+* Banner caching by ad unit and width.
+* Bounded retries with 2, 4 and 8 second backoff delays.
+* Standard and large adaptive banner size policies.
+* Structured app open diagnostics without an analytics dependency.
 
 | Feature | Screenshot | Feature | Screenshot |
 | --- | --- | --- | --- |
@@ -93,6 +97,8 @@ main.dart
 ```dart
 // ...
 import 'package:example/app_ad_units.dart'; // <-- import getx admob ad units
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:getx_admob/getx_admob.dart'; // <-- import getx admob
 void main() async {
   // ensure initialized
@@ -107,6 +113,8 @@ void main() async {
         androidUnitId: 'OPEN_APP_AD_UNIT_ID_ANDROID',
         iosUnitId: 'OPEN_APP_AD_UNIT_ID_IOS',
       ),
+      bannerSizePolicy: AdmobBannerSizePolicy.largeAdaptive,
+      onDiagnostic: (event) => debugPrint(event.toString()),
     ),
   );
   // ...
@@ -116,6 +124,8 @@ void main() async {
 
 my_app.dart
 ```dart
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:getx_admob/getx_admob.dart'; // <-- import getx admob
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -125,7 +135,10 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       // ...
       builder: (context, child) {
-        return AdaptiveAdLoader(child: child); // <-- use adaptive ad loader
+        return AdaptiveAdLoader(
+          preloadAllBanners: false,
+          child: child,
+        );
       },
     );
   }
@@ -136,6 +149,7 @@ home_page.dart
 ```dart
 // ...
 import 'package:example/app_ad_units.dart'; // <-- import getx admob ad units
+import 'package:flutter/material.dart';
 import 'package:getx_admob/getx_admob.dart'; // <-- import getx admob
 
 class HomePage extends StatelessWidget {
@@ -156,10 +170,67 @@ class HomePage extends StatelessWidget {
 }
 ```
 
-## VS Code launch.json
-When you are use VS Code, you can use launch.json to enable or disable ad in your app.
+## Banner loading
 
-It will using production ad by default.
+`AdaptiveAdLoader` keeps the original behavior by default: `preloadAllBanners` is `true`, so every registered banner is loaded when the app starts and when the screen width changes.
+
+Set `preloadAllBanners: false` to load a banner only when its `AppBannerAd` is mounted. Loaded banners remain cached by ad unit and width, so rebuilding a page does not request the same banner again. A width change creates a separate cache entry and leaves other banner sizes untouched.
+
+The existing full-loading API remains available:
+
+```dart
+Get.find<AdmobService>().loadAllAds(width);
+```
+
+A specific banner can also be loaded explicitly in either mode:
+
+```dart
+Get.find<AdmobService>().ensureBannerLoaded(AppAdUnits.homeBanner, width);
+```
+
+A failed banner load is retried after 2, 4 and 8 seconds, with at most three retries. After the final failure, requests stop until the banner widget is mounted again or `ensureBannerLoaded` is called explicitly. Timers are cancelled when their cache entry or the service is disposed.
+
+## Banner size policy
+
+The default policy is `AdmobBannerSizePolicy.largeAdaptive`, which preserves the existing behavior. Use `AdmobBannerSizePolicy.standardAdaptive` to run a standard adaptive banner comparison:
+
+```dart
+AdmobService().init(
+  adUnitIds: AppAdUnits.adUnits,
+  appOpenAdUnitId: appOpenAdUnitId,
+  bannerSizePolicy: AdmobBannerSizePolicy.standardAdaptive,
+);
+```
+
+Compare layouts, impressions, match rate and eCPM separately before changing the default in an application.
+
+## App open diagnostics
+
+Pass `onDiagnostic` to `AdmobService.init` to receive `AdmobDiagnosticEvent` objects for app open load, availability, expiration, show and dismiss events. Events include the ad unit, timestamp, relevant duration and, for failures, the AdMob error code, domain and message.
+
+The service also exposes `isAppOpenAdLoading`, `isAppOpenAdAvailable`, `isAppOpenAdShowing` and `appOpenLoadTime`. No analytics dependency is added; applications can decide how to record these events.
+
+## Android example
+
+The included example enables on-demand banner loading, standard adaptive banners and app open diagnostics. Its Android build uses Gradle 9.1.0 and has been verified with JDK 25 on Android 16. Java source and target compatibility remain at Java 17.
+
+Run the example with AdMob test units:
+
+```bash
+cd example
+flutter pub get
+flutter run --dart-define=DEBUG_AD=true
+```
+
+Build the debug APK:
+
+```bash
+flutter build apk --debug
+```
+
+## VS Code launch.json
+
+You can use VS Code launch configurations to enable or disable ads and select test or production ad units. Production ad units are used by default.
 
 launch.json example
 ```json
