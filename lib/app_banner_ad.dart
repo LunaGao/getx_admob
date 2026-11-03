@@ -14,8 +14,10 @@ class AppBannerAd extends StatefulWidget {
 }
 
 class _AppBannerAdState extends State<AppBannerAd> {
+  final Object _bannerOwner = Object();
   AdmobUnitId? _lastRequestedAdUnit;
   int? _lastRequestedWidth;
+  bool _isMountRetryScheduled = false;
 
   @override
   void didUpdateWidget(covariant AppBannerAd oldWidget) {
@@ -24,6 +26,16 @@ class _AppBannerAdState extends State<AppBannerAd> {
       _lastRequestedAdUnit = null;
       _lastRequestedWidth = null;
     }
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (Get.isRegistered<AdmobService>()) {
+        Get.find<AdmobService>().releaseBannerAds(_bannerOwner);
+      }
+    });
+    super.dispose();
   }
 
   @override
@@ -43,20 +55,42 @@ class _AppBannerAdState extends State<AppBannerAd> {
         }
         return Obx(() {
           final isLoaded = adService.loadedAds[widget.adBannerValue] ?? false;
-          final bannerAd = adService.isOnDemandBannerLoadingEnabled
-              ? adService.bannerAdFor(widget.adBannerValue, width)
+          final isOnDemand = adService.isOnDemandBannerLoadingEnabled;
+          final bannerAd = isOnDemand
+              ? adService.bannerAdFor(
+                  widget.adBannerValue,
+                  width,
+                  owner: _bannerOwner,
+                )
               : adService.bannerAds[widget.adBannerValue];
           if (!isLoaded || bannerAd == null) {
             return const SizedBox.shrink();
           }
+          final isMounted = !isOnDemand && bannerAd.isMounted;
+          if (isMounted) {
+            _retryMountedAdAfterFrame();
+          }
           return SizedBox(
             width: bannerAd.size.width.toDouble(),
             height: bannerAd.size.height.toDouble(),
-            child: AdWidget(ad: bannerAd),
+            child: isMounted ? null : AdWidget(ad: bannerAd),
           );
         });
       },
     );
+  }
+
+  void _retryMountedAdAfterFrame() {
+    if (_isMountRetryScheduled) {
+      return;
+    }
+    _isMountRetryScheduled = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _isMountRetryScheduled = false;
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   void _requestBanner(AdmobService adService, int width) {
@@ -73,7 +107,7 @@ class _AppBannerAdState extends State<AppBannerAd> {
           !Get.isRegistered<AdmobService>()) {
         return;
       }
-      adService.ensureBannerLoaded(adUnit, width);
+      adService.ensureBannerLoaded(adUnit, width, owner: _bannerOwner);
     });
   }
 }

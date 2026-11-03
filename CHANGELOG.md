@@ -1,3 +1,9 @@
+## 0.3.1
+
+* fix duplicate `AdWidget` mounting when banners are rebuilt during screen rotation or foldable display changes.
+* give each on-demand `AppBannerAd` instance its own `BannerAd` and release it when the widget is disposed.
+* prevent retained pages from blocking banners on newly displayed pages.
+
 ## 0.3.0
 
 * add on-demand banner loading with unit-and-width caching.

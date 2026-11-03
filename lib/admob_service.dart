@@ -121,7 +121,11 @@ class AdmobService extends GetxService {
     }
   }
 
-  Future<void> ensureBannerLoaded(AdmobUnitId adUnitId, int width) async {
+  Future<void> ensureBannerLoaded(
+    AdmobUnitId adUnitId,
+    int width, {
+    Object? owner,
+  }) async {
     if (!_canLoadBanner(width)) {
       return;
     }
@@ -131,7 +135,7 @@ class AdmobService extends GetxService {
       );
       return;
     }
-    final key = _BannerCacheKey(adUnitId, width);
+    final key = _BannerCacheKey(adUnitId, width, owner);
     var entry = _bannerEntries[key];
     if (entry != null) {
       if (entry.status == _BannerLoadStatus.loading ||
@@ -147,12 +151,32 @@ class AdmobService extends GetxService {
     await _loadBannerEntry(entry);
   }
 
-  BannerAd? bannerAdFor(AdmobUnitId adUnitId, int width) {
-    final entry = _bannerEntries[_BannerCacheKey(adUnitId, width)];
+  BannerAd? bannerAdFor(AdmobUnitId adUnitId, int width, {Object? owner}) {
+    final entry = _bannerEntries[_BannerCacheKey(adUnitId, width, owner)];
     if (entry?.status != _BannerLoadStatus.loaded) {
       return null;
     }
     return entry!.ad;
+  }
+
+  void releaseBannerAds(Object owner) {
+    final adUnitIds = <AdmobUnitId>{};
+    _bannerEntries.removeWhere((key, entry) {
+      if (!identical(key.owner, owner)) {
+        return false;
+      }
+      adUnitIds.add(key.adUnitId);
+      entry.generation++;
+      entry.retryTimer?.cancel();
+      entry.retryTimer = null;
+      entry.ad?.dispose();
+      entry.ad = null;
+      entry.status = _BannerLoadStatus.idle;
+      return true;
+    });
+    for (final adUnitId in adUnitIds) {
+      _syncLegacyBannerAds(adUnitId);
+    }
   }
 
   bool _canLoadBanner(int width) {
@@ -510,20 +534,22 @@ class AdmobService extends GetxService {
 }
 
 class _BannerCacheKey {
-  const _BannerCacheKey(this.adUnitId, this.width);
+  const _BannerCacheKey(this.adUnitId, this.width, this.owner);
 
   final AdmobUnitId adUnitId;
   final int width;
+  final Object? owner;
 
   @override
   bool operator ==(Object other) {
     return other is _BannerCacheKey &&
         other.adUnitId == adUnitId &&
-        other.width == width;
+        other.width == width &&
+        identical(other.owner, owner);
   }
 
   @override
-  int get hashCode => Object.hash(adUnitId, width);
+  int get hashCode => Object.hash(adUnitId, width, identityHashCode(owner));
 }
 
 enum _BannerLoadStatus { idle, loading, waitingForRetry, loaded, failed }
