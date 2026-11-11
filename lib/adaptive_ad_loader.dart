@@ -5,7 +5,7 @@ import 'admob_service.dart';
 class AdaptiveAdLoader extends StatefulWidget {
   const AdaptiveAdLoader({
     required this.child,
-    this.preloadAllBanners = true,
+    this.preloadAllBanners = false,
     super.key,
   });
 

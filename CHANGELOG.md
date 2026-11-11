@@ -1,3 +1,8 @@
+## 0.4.0
+
+* make `appOpenAdUnitId` optional; omit it to disable app open ad preloading and display.
+* change `preloadAllBanners` to default to `false`, loading banners on demand unless startup preloading is explicitly enabled.
+
 ## 0.3.1
 
 * fix duplicate `AdWidget` mounting when banners are rebuilt during screen rotation or foldable display changes.

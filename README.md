@@ -27,7 +27,7 @@ Add `getx_admob` to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  getx_admob: ^0.3.1
+  getx_admob: ^0.4.0
 ```
 
 Then run `flutter pub get`.
@@ -184,9 +184,9 @@ class HomePage extends StatelessWidget {
 
 ## Banner loading
 
-`AdaptiveAdLoader` keeps the original behavior by default: `preloadAllBanners` is `true`, so every registered banner is loaded when the app starts and when the screen width changes.
+By default, `preloadAllBanners` is `false`, so no registered banners are preloaded when the app starts or the screen width changes. Each banner is loaded only when its `AppBannerAd` is mounted.
 
-Set `preloadAllBanners: false` to load a banner only when its `AppBannerAd` is mounted. Loaded banners are cached per widget instance by ad unit and width, so rebuilding the same widget does not request the same banner again. Each widget instance owns a separate `BannerAd`, which is released after the widget is disposed and is never shared with another `AdWidget`. A width change creates a separate cache entry and leaves other banner sizes untouched.
+Set `preloadAllBanners: true` to preload every registered banner at startup and when the screen width changes. In on-demand mode, loaded banners are cached per widget instance by ad unit and width, so rebuilding the same widget does not request the same banner again. Each widget instance owns a separate `BannerAd`, which is released after the widget is disposed and is never shared with another `AdWidget`. A width change creates a separate cache entry and leaves other banner sizes untouched.
 
 The existing full-loading API remains available:
 
