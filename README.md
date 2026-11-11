@@ -119,6 +119,7 @@ void main() async {
   await Get.putAsync(
     () => AdmobService().init(
       adUnitIds: AppAdUnits.adUnits,
+      // Optional: omit this parameter to disable app open ads.
       // using for production
       appOpenAdUnitId: AdmobUnitId(
         androidUnitId: 'OPEN_APP_AD_UNIT_ID_ANDROID',
@@ -214,6 +215,16 @@ AdmobService().init(
 ```
 
 Compare layouts, impressions, match rate and eCPM separately before changing the default in an application.
+
+## Optional app open ads
+
+Omit `appOpenAdUnitId` to disable app open ads. The service will neither preload nor show them when the app resumes, while banner ads continue to work normally. This also applies when `DEBUG_AD=true`.
+
+```dart
+AdmobService().init(
+  adUnitIds: AppAdUnits.adUnits,
+);
+```
 
 ## App open diagnostics
 

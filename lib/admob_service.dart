@@ -35,7 +35,7 @@ class AdmobService extends GetxService {
 
   /// Maximum duration allowed between loading and showing the ad.
   final Duration maxCacheDuration = const Duration(hours: 4);
-  late AdmobUnitId appOpenAdUnitId;
+  AdmobUnitId? appOpenAdUnitId;
   AppOpenAd? _appOpenAd;
   bool _isShowingAppOpenAd = false;
 
@@ -56,7 +56,7 @@ class AdmobService extends GetxService {
 
   Future<AdmobService> init({
     required List<AdmobUnitId> adUnitIds,
-    required AdmobUnitId appOpenAdUnitId,
+    AdmobUnitId? appOpenAdUnitId,
     AdmobBannerSizePolicy bannerSizePolicy =
         AdmobBannerSizePolicy.largeAdaptive,
     AdmobDiagnosticCallback? onDiagnostic,
@@ -77,7 +77,11 @@ class AdmobService extends GetxService {
     return this;
   }
 
-  String getAppOpenAdUnitId() {
+  String? getAppOpenAdUnitId() {
+    final adUnitId = appOpenAdUnitId;
+    if (adUnitId == null) {
+      return null;
+    }
     if (debugAd) {
       // https://developers.google.com/admob/flutter/app-open
       // values for debug
@@ -89,7 +93,7 @@ class AdmobService extends GetxService {
         return 'ca-app-pub-3940256099942544/5575463023';
       }
     }
-    return appOpenAdUnitId.productionUnitId;
+    return adUnitId.productionUnitId;
   }
 
   String getAdUnitId(AdmobUnitId adValue) {
@@ -339,14 +343,19 @@ class AdmobService extends GetxService {
   }
 
   void _loadAppOpenAd() {
-    if (!enableAd || _isClosed || _isLoadingAppOpenAd || _appOpenAd != null) {
+    final adUnitId = getAppOpenAdUnitId();
+    if (!enableAd ||
+        _isClosed ||
+        _isLoadingAppOpenAd ||
+        _appOpenAd != null ||
+        adUnitId == null) {
       return;
     }
     _isLoadingAppOpenAd = true;
     _appOpenLoadStartedAt = DateTime.now();
     _emitAppOpenDiagnostic(AdmobDiagnosticType.appOpenLoadStarted);
     AppOpenAd.load(
-      adUnitId: getAppOpenAdUnitId(),
+      adUnitId: adUnitId,
       request: const AdRequest(),
       adLoadCallback: AppOpenAdLoadCallback(
         onAdLoaded: (ad) {
@@ -392,6 +401,7 @@ class AdmobService extends GetxService {
   void showAppOpenAdIfAvailable() {
     if (!enableAd ||
         _isClosed ||
+        appOpenAdUnitId == null ||
         (!GetPlatform.isAndroid && !GetPlatform.isIOS)) {
       return;
     }
@@ -480,10 +490,14 @@ class AdmobService extends GetxService {
     Duration? duration,
     AdError? error,
   }) {
+    final adUnitId = appOpenAdUnitId;
+    if (adUnitId == null) {
+      return;
+    }
     final event = AdmobDiagnosticEvent(
       type: type,
       timestamp: DateTime.now(),
-      adUnitId: appOpenAdUnitId.productionUnitId,
+      adUnitId: adUnitId.productionUnitId,
       duration: duration,
       errorCode: error?.code,
       errorDomain: error?.domain,
